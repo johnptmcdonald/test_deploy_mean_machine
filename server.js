@@ -7,7 +7,7 @@ var port = process.env.PORT || 8080;
 
 var User = require('./app/models/user.js')
 
-mongoose.connect(MONGOLAB_URI)
+mongoose.connect(process.env.MONGOLAB_URI)
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
