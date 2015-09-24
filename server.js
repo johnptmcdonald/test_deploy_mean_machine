@@ -4,10 +4,11 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var port = process.env.PORT || 8080;
+var config = require('./config')
 
 var User = require('./app/models/user.js')
 
-mongoose.connect(process.env.MONGOLAB_URI)
+mongoose.connect(config.database)
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next){
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Access-Control-Allow-Methods', 'GET', 'POST');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, \ Authorization');
+	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 	next();
 })
 
@@ -44,7 +45,15 @@ apiRouter.get('/', function(req,res){
 // api/users routes
 apiRouter.route('/users')
 	// create a new user
+
+	.get(function(req, res){
+		console.log("getting users")
+		res.json({message: "users are here!"})
+	})
+
 	.post(function(req, res){
+		console.log("posting")
+		console.log(req.body)
 		// create a new instance of the User model
 		var user = new User();
 
@@ -59,9 +68,9 @@ apiRouter.route('/users')
 				// duplicate entry
 				if(err.code == 11000){
 					return res.json({success: false, message: "A user with that username already exists"});
-				} else {
-					return res.send(err)
-				}
+				} 
+			}else {
+					return res.send({message: "success!"})
 			}
 		})
 	})
